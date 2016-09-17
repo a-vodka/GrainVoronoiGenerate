@@ -178,7 +178,7 @@ namespace Grain.AnalyseImage
                         {
                             var point = new PointF(i, j);
                             imageColor.Draw(new CircleF(point, data.CircleRad), colorCircle, data.LineThickness);
-                            resultAnalyse.SizesOfXElements.Add(size);
+                            resultAnalyse.SizesOfYElements.Add(size);
                             
                             size = 0;
                         }
@@ -202,8 +202,8 @@ namespace Grain.AnalyseImage
             var result1 = AnalyseXDirection(data);
             var result2 = AnalyseYDirection(data);
             var resultFinal = new ResultAnalyse();
-            resultFinal.GrainsCountX = result1.SizesOfXElements.Count/(data.Lines/2);
-            resultFinal.GrainsCountY = result2.SizesOfYElements.Count/(data.Lines/2);
+            resultFinal.GrainsCountX = result1.SizesOfXElements.Count/data.Lines;
+            resultFinal.GrainsCountY = result2.SizesOfYElements.Count/data.Lines;
             return resultFinal;
 
         }
@@ -211,16 +211,10 @@ namespace Grain.AnalyseImage
         public void ShowResult(ResultAnalyse resultAnalyse)
         {
             AllocConsole();
-            foreach (var size in resultAnalyse.SizesOfXElements)
-            {
-                Console.WriteLine(size.ToString());
-            }
-
-            AllocConsole();
-            foreach (var size in resultAnalyse.SizesOfYElements)
-            {
-                Console.WriteLine(size.ToString());
-            }
+        
+            Console.WriteLine(resultAnalyse.GrainsCountX);                 
+            Console.WriteLine(resultAnalyse.GrainsCountY);
+            
         }
     }
  }

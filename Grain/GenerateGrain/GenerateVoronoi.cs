@@ -31,20 +31,16 @@ namespace Grain.GenerateGrain
 
         public void GenerateVoronoiPoints(Canvas canvas)
         {
-            var xVal = new double[CentresX];
-            var yVal = new double[CentresY];
+            var xVal = new double[CentresX * CentresY];
+            var yVal = new double[CentresY * CentresX];
             var voronoiObject = new Voronoi(0.1);
             var random = new Random();
 
-            for (int i = 0; i < CentresX; i++)
+            for (int i = 0; i < CentresX * CentresY; i++)
             {
-                xVal[i] = random.Next(0, ResX);               
-            }
-
-            for (int i = 0; i < CentresY; i++)
-            {               
+                xVal[i] = random.Next(0, ResX);
                 yVal[i] = random.Next(0, ResY);
-            }
+            }        
 
             var ge = voronoiObject.generateVoronoi(xVal, yVal, 0.1, ResX, 0.1, ResY);
 
