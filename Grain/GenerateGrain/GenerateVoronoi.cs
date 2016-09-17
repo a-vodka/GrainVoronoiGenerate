@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,9 @@ namespace Grain.GenerateGrain
         private int ResX { get; }
         private int ResY { get; }
 
+        [DllImport("Kernel32")]
+        public static extern void AllocConsole();
+
         public GenerateVoronoi(int centresX, int centresY, int resX, int resY)
         {
             CentresX = centresX;
@@ -31,18 +35,47 @@ namespace Grain.GenerateGrain
 
         public void GenerateVoronoiPoints(Canvas canvas)
         {
-            var xVal = new double[CentresX * CentresY];
-            var yVal = new double[CentresY * CentresX];
+            var xVal = new double[CentresX];
+            var yVal = new double[CentresY];
             var voronoiObject = new Voronoi(0.1);
-            var random = new Random();
+            var random = new Random();    
+            var VoronoiCounts = 0;
+            var xValVoronoi = new double[CentresX * CentresY];
+            var yValVoronoi = new double[CentresY * CentresX];
 
-            for (int i = 0; i < CentresX * CentresY; i++)
+            var strideX = 0;
+            var strideY = 0;
+            //for (var i = 0; i < CentresX; i++)
+            //{
+            //    for (var j = 0; j < CentresY; j++)
+            //    {
+
+            //    }
+            //}
+            for (int i = 0; i < CentresX; i++)
             {
-                xVal[i] = random.Next(0, ResX);
-                yVal[i] = random.Next(0, ResY);
-            }        
+                xVal[i] = random.Next(strideX, strideX + ResX / CentresX);
+                strideX += ResX / CentresX;   
+                      
+                for (var j = 0; j < CentresY; j++) 
+                {                
+                    yVal[j] = random.Next(strideY, strideY + ResY / CentresY);
+                    strideY += ResY / CentresY;            
 
-            var ge = voronoiObject.generateVoronoi(xVal, yVal, 0.1, ResX, 0.1, ResY);
+                    xValVoronoi[VoronoiCounts] = xVal[i];
+                    yValVoronoi[VoronoiCounts] = yVal[j];
+                    VoronoiCounts++;
+                }
+                strideY = 0;              
+             }
+
+            //AllocConsole();
+            //foreach (var e in yValVoronoi)
+            //{
+            //    Console.WriteLine(e);
+            //}
+
+            var ge = voronoiObject.generateVoronoi(xValVoronoi, yValVoronoi, 0.1, ResX, 0.1, ResY);
 
             Points = new System.Windows.Point[2];
             canvas.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
